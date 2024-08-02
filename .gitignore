@@ -1,0 +1,16 @@
+/.classpath
+/.project
+# Java ignores
+/java/target
+# Compiled class file
+*.class
+/.settings/*
+/.classpath
+/.project
+/target/*
+/.settings/
+*.csv
+*.log
+/bin/
+/target/
+/logs/
