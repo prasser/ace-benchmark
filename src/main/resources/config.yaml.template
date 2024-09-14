@@ -1,0 +1,35 @@
+tool:
+  uri: "http://ace.server.com/api/pseudonymization" # TODO: Change to appropriate URL
+  clientId: "ace" # TODO: Change if necessary
+  clientSecret: "your-client-secret" # TODO: Insert client secret provided by keycloak
+  keycloakAuthUri: "https://keycloak.server.com" # TODO: Change to the URI of the Keycloak authentication server
+  keycloakRealmName: "production" # TODO: Change to the name of Keycloak realm
+  username: "user" # TODO: Change to the benchmark user name
+  password: "password" # TODO: Change to the user's password
+
+benchmark:
+  initialDbSize: 2000
+  maxTime: 3600000 # in milliseconds
+  domainName: "TestStudy"
+  reportingInterval: 1000 # in milliseconds
+  reportingIntervalDbSpace: 30000 # in milliseconds
+  numThreads: 16
+  numberOfRepetitions: 1
+  scenarios:
+    - name: "ping"
+      pingRate: 100
+    - name: "mostly-write"
+      createRate: 75
+      readRate: 23
+      updateRate: 1
+      deleteRate: 1
+    - name: "mostly-read"
+      createRate: 23
+      readRate: 75
+      updateRate: 1
+      deleteRate: 1
+    - name: "read-write"
+      createRate: 49
+      readRate: 49
+      updateRate: 1
+      deleteRate: 1

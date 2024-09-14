@@ -1,3 +1,20 @@
+/*
+ * ACE-Benchmark Driver
+ * Copyright 2024 Armin Müller and contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.trustdeck.benchmark.psneval;
 
 import java.io.IOException;
@@ -9,44 +26,66 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.trustdeck.benchmark.http.HTTPAuthentication;
 import org.trustdeck.benchmark.psnservice.PSNService;
 
+import lombok.Getter;
+
+/**
+ * This class contains the statistics collected for benchmarking.
+ * 
+ * @author Armin Müller, Felix N. Wirth, and Fabian Prasser
+ */
 public class Statistics {
 
-    /** Config */
+    /** The configuration object. */
     private final Configuration config;
 
-    /** Start time */
-    private long                startTime;
+    /** The start time of the benchmark run. */
+    @Getter
+    private long startTime;
 
-    /** Stats */
+    /** Atomic number of creates. */
     private final AtomicInteger creates = new AtomicInteger();
-    /** Stats */
+    
+    /** Atomic number of reads. */
     private final AtomicInteger reads   = new AtomicInteger();
-    /** Stats */
+    
+    /** Atomic number of updates. */
     private final AtomicInteger updates = new AtomicInteger();
-    /** Stats */
+    
+    /** Atomic number of deletes. */
     private final AtomicInteger deletes = new AtomicInteger();
-    /** Stats */
+    
+    /** Atomic number of pings. */
     private final AtomicInteger pings 	= new AtomicInteger();
 
-    /** Internal tracking */
-    private long                lastTime    = 0;
-    /** Internal tracking */
-    private long                lastTimeDB  = 0;
-    /** Internal tracking */
-    private int                 lastCreates = 0;
-    /** Internal tracking */
-    private int                 lastReads   = 0;
-    /** Internal tracking */
-    private int                 lastUpdates = 0;
-    /** Internal tracking */
-    private int                 lastDeletes = 0;
-    /** Internal tracking */
-    private int                 lastPings = 0;
-    /** Internal tracking */
-    private int                 lastCRUDs = 0;
+    /** Last time the statistics were gathered. */
+    @Getter
+    private long lastTime = 0;
+    
+    /** Last time the database statistics were gathered. */
+    @Getter
+    private long lastTimeDB = 0;
+    
+    /** Number of creates from last statistic-gathering. */
+    private int lastCreates = 0;
+    
+    /** Number of reads from last statistic-gathering */
+    private int lastReads = 0;
+    
+    /** Number of updates from last statistic-gathering */
+    private int lastUpdates = 0;
+    
+    /** Number of deletes from last statistic-gathering */
+    private int lastDeletes = 0;
+    
+    /** Number of pings from last statistic-gathering */
+    private int lastPings = 0;
+    
+    /** Number of combined creates, reads, updates, and deletes from last statistic-gathering */
+    private int lastCRUDs = 0;
    
     /**
      * Creates a new instance.
+     * 
      * @param configuration
      */
     public Statistics(Configuration configuration) {
@@ -87,35 +126,15 @@ public class Statistics {
     public void addPing() {
         this.pings.incrementAndGet();
     }
-    
-    /**
-     * @return the lastTime
-     */
-    public long getLastTime() {
-        return lastTime;
-    }
-    
-    /**
-     * @return the lastTimeDB
-     */
-    public long getLastTimeDB() {
-        return lastTimeDB;
-    }
-    
-    /**
-     * @return the startTime
-     */
-    public long getStartTime() {
-        return startTime;
-    }
 
     /**
-     * Reporting. NOT thread safe
+     * Reporting. NOT thread safe.
+     * 
      * @throws IOException 
      */
     public void report(Writer writer) throws IOException {
         
-        // Collect
+        // Collect data
         long currentTime = System.currentTimeMillis();
         int currentCreates = creates.get();
         int currentReads = reads.get(); 
@@ -183,12 +202,13 @@ public class Statistics {
     }
     
     /**
-    * Reporting DB storage. NOT thread safe
+    * Reporting DB storage. NOT thread safe.
+    * 
     * @throws IOException 
     */
    public void reportDBStorage(Writer writer, WorkProvider provider, HTTPAuthentication authentication, PSNService service) throws IOException, URISyntaxException {
 	   
-       // Collect
+       // Collect data
        long currentTime = System.currentTimeMillis();
        
        String d = provider.getDBStorageMetrics(authentication, service, "domain");
@@ -262,7 +282,7 @@ public class Statistics {
    }
 
     /**
-     * Start
+     * Stores the start time.
      */
     public void start() {
         this.startTime = System.currentTimeMillis();

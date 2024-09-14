@@ -1,16 +1,20 @@
-/* 
+/*
+ * ACE-Benchmark Driver
+ * Copyright 2024 Armin Müller and contributors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.trustdeck.benchmark.psnservice;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,26 +22,43 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * A domain
+ * Represents a domain.
+ * 
  * @author Felix Wirth
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "name", "prefix", "validFrom", "validityTime", "description" })
-
 public class Domain {
-
+	
+	/** The domain's . */
     @JsonProperty("name")
-    private String              name;
+    private String name;
+    
+    /** The domain's prefix. */
     @JsonProperty("prefix")
-    private String              prefix;
+    private String prefix;
+    
+    /** The domain's valid from date-time. */
     @JsonProperty("validFrom")
-    private String              validFrom;
+    private String validFrom;
+    
+    /** The domain's validity period. */
     @JsonProperty("validityTime")
-    private String              validityTime;
+    private String validityTime;
+    
+    /** The domain's description. */
     @JsonProperty("description")
-    private String              description;
+    private String description;
 
     /**
+     * Creates a new instance.
+     */
+    public Domain() {
+    	// Empty by design
+    }
+
+    /**
+     * Creates a new domain object.
      *
      * @param validityTime
      * @param prefix
@@ -59,13 +80,8 @@ public class Domain {
     }
 
     /**
-     * Creates a new instance
-     */
-    public Domain() {
-    }
-
-    /**
-     * Creates a new instance
+     * Creates a new instance.
+     * 
      * @param name
      * @param prefix
      */

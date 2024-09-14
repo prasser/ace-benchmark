@@ -1,16 +1,20 @@
-/* 
+/*
+ * ACE-Benchmark Driver
+ * Copyright 2024 Armin Müller and contributors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.trustdeck.benchmark.psnservice;
 
 import java.util.HashMap;
@@ -22,50 +26,62 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * A class for records
+ * Represents a pseudonym record.
+ * 
  * @author Felix Wirth
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "id", "idType", "validFrom", "validityTime" })
-public class Record {
+public class Pseudonym {
 
+	/** The pseudonym's identifier. */
     @JsonProperty("id")
-    private String              id;
+    private String id;
+
+	/** The pseudonym's identifier's type. */
     @JsonProperty("idType")
-    private String              idType;
+    private String idType;
+
+	/** The pseudonym's start date of validity. */
     @JsonProperty("validFrom")
-    private String              validFrom;
+    private String validFrom;
+
+	/** The pseudonym's validity time period. */
     @JsonProperty("validityTime")
-    private String              validityTime;
-    
+    private String validityTime;
+
+	/** Additional properties. */
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     * No args constructor for use in serialization
+     * No args constructor for use in serialization.
      *
      */
-    public Record() {
+    public Pseudonym() {
+    	// Emtpy by design
     }
     
     /**
-     * Creates new instance
+     * Creates a new instance.
+     * 
      * @param id
      * @param idType
      */
-    public Record(String id, String idType) {
+    public Pseudonym(String id, String idType) {
         this.id = id;
         this.idType = idType;
     }
     
     /**
+     * Creates a new instance.
      *
      * @param validityTime
      * @param idType
      * @param id
      * @param validFrom
      */
-    public Record(String id, String idType, String validFrom, String validityTime) {
+    public Pseudonym(String id, String idType, String validFrom, String validityTime) {
         super();
         this.id = id;
         this.idType = idType;
@@ -83,7 +99,7 @@ public class Record {
         this.id = id;
     }
 
-    public Record withId(String id) {
+    public Pseudonym withId(String id) {
         this.id = id;
         return this;
     }
@@ -98,7 +114,7 @@ public class Record {
         this.idType = idType;
     }
 
-    public Record withIdType(String idType) {
+    public Pseudonym withIdType(String idType) {
         this.idType = idType;
         return this;
     }
@@ -113,7 +129,7 @@ public class Record {
         this.validFrom = validFrom;
     }
 
-    public Record withValidFrom(String validFrom) {
+    public Pseudonym withValidFrom(String validFrom) {
         this.validFrom = validFrom;
         return this;
     }
@@ -128,7 +144,7 @@ public class Record {
         this.validityTime = validityTime;
     }
 
-    public Record withValidityTime(String validityTime) {
+    public Pseudonym withValidityTime(String validityTime) {
         this.validityTime = validityTime;
         return this;
     }

@@ -5,8 +5,9 @@
 	<groupId>org.trustdeck</groupId>
 	<artifactId>benchmark</artifactId>
 	<version>0.3</version>
-    	<name>ace-benchmark</name>
+    <name>ace-benchmark</name>
 	<packaging>jar</packaging>
+	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -63,6 +64,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 	<dependencies>
         <dependency>
             <groupId>org.keycloak</groupId>
@@ -124,8 +126,22 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math3</artifactId>
 			<version>3.6.1</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+            <!-- Used to reduce boilerplate code. -->
+            <!-- License: MIT License (compatible with Apache 2.0; https://joinup.ec.europa.eu/licence/compatibility-check/MIT/Apache-2.0) -->
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+            <version>1.18.34</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.yaml</groupId>
+		    <artifactId>snakeyaml</artifactId>
+		    <version>2.3</version>
+		</dependency>
 	</dependencies>
+	
 	<properties>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>ISO-8859-1</project.reporting.outputEncoding>
