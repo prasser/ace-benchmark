@@ -12,6 +12,7 @@ benchmark:
   maxTime: 3600000 # in milliseconds
   domainName: "TestStudy"
   reportingInterval: 1000 # in milliseconds
+  reportDbSpace: true
   reportingIntervalDbSpace: 30000 # in milliseconds
   numThreads: 16
   numberOfRepetitions: 1

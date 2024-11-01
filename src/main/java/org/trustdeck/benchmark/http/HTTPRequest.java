@@ -199,10 +199,6 @@ public class HTTPRequest {
 	            throw new IllegalStateException("Unknown request type.");
         }
         
-        if (client != null) {
-        	client.close();
-        }
-        
         // Done
         return response.readEntity(String.class);
     }

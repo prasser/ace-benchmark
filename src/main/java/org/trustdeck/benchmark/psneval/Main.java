@@ -67,6 +67,7 @@ public class Main {
         final int MAX_TIME = (int) benchmarkConfig.get("maxTime");
         final String DOMAIN_NAME = (String) benchmarkConfig.get("domainName");
         final int REPORTING_INTERVAL = (int) benchmarkConfig.get("reportingInterval");
+        final boolean REPORT_DB_SPACE = (boolean) benchmarkConfig.get("reportDbSpace");
         final int REPORTING_INTERVAL_DB_SPACE = (int) benchmarkConfig.get("reportingIntervalDbSpace");
         final int NUM_THREADS = (int) benchmarkConfig.get("numThreads");
         final int NUMBER_OF_REPETITIONS = (int) benchmarkConfig.get("numberOfRepetitions");
@@ -105,7 +106,7 @@ public class Main {
 
         // Execute
         for (Configuration config : configs) {
-            execute(config, CLIENT_ID, CLIENT_SECRET, KEYCLOAK_AUTH_URI, KEYCLOAK_REALM_NAME, USERNAME, PASSWORD, URI);
+            execute(config, CLIENT_ID, CLIENT_SECRET, KEYCLOAK_AUTH_URI, KEYCLOAK_REALM_NAME, USERNAME, PASSWORD, URI, REPORT_DB_SPACE);
         }
     }
     
@@ -118,7 +119,7 @@ public class Main {
      */
     private static final void execute(Configuration config, String CLIENT_ID, String CLIENT_SECRET, 
     		String KEYCLOAK_AUTH_URI, String KEYCLOAK_REALM_NAME, String USERNAME, String PASSWORD, 
-    		String URI) throws IOException, URISyntaxException {
+    		String URI, boolean REPORT_DB_SPACE) throws IOException, URISyntaxException {
         // Some logging
         System.out.println("Executing configuration: " + config.getName());
         System.out.println(" - Preparing service: ");
@@ -173,7 +174,7 @@ public class Main {
         
         // Files to write to
         BufferedWriter writer = new BufferedWriter(new FileWriter(new File(config.getName() + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")) + ".csv")));
-        BufferedWriter dbWriter = new BufferedWriter(new FileWriter(new File(config.getName() + "_DB_STORAGE-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")) + ".csv")));
+        BufferedWriter dbWriter = REPORT_DB_SPACE ? new BufferedWriter(new FileWriter(new File(config.getName() + "_DB_STORAGE-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")) + ".csv"))) : null;
         
         // Event and logging loop
         while (true) {
@@ -188,7 +189,7 @@ public class Main {
             }
             
             // Reporting DB storage size
-            if (System.currentTimeMillis() - statistics.getLastTimeDB() >= config.getReportingIntervalDBSpace()) {
+            if (REPORT_DB_SPACE && System.currentTimeMillis() - statistics.getLastTimeDB() >= config.getReportingIntervalDBSpace()) {
                 statistics.reportDBStorage(dbWriter, provider, authentication, service);
                 dbWriter.flush();
             }
@@ -214,8 +215,10 @@ public class Main {
         
         // Close writer
         writer.close();
-        dbWriter.close();
-
+        if (REPORT_DB_SPACE) {
+        	dbWriter.close();
+        }
+        
         // Some logging
         System.out.println(" - Done");
     }
