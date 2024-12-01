@@ -1,4 +1,4 @@
-tool:
+ace:
   uri: "http://ace.server.com/api/pseudonymization" # TODO: Change to appropriate URL
   clientId: "ace" # TODO: Change if necessary
   clientSecret: "your-client-secret" # TODO: Insert client secret provided by keycloak

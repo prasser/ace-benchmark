@@ -92,21 +92,9 @@ public class Main {
         }
         
 
-        // Extract the tool configuration from the loaded configuration file
-        @SuppressWarnings("unchecked")
-        Map<String, String> toolConfig = (Map<String, String>) yamlConfig.get("tool");
-        final String URI = toolConfig.get("uri");
-        final String CLIENT_ID = toolConfig.get("clientId");
-        final String CLIENT_SECRET = toolConfig.get("clientSecret");
-        final String KEYCLOAK_AUTH_URI = toolConfig.get("keycloakAuthUri");
-        final String KEYCLOAK_REALM_NAME = toolConfig.get("keycloakRealmName");
-        final String USERNAME = toolConfig.get("username");
-        final String PASSWORD = toolConfig.get("password");
-        final String DOMAIN_NAME = (String) benchmarkConfig.get("domainName");
-
         // Create connector
         System.out.print("\r - Preparing service: creating authentication and service object");
-        Connector connector = new ACEConnector(URI, DOMAIN_NAME, CLIENT_ID, CLIENT_SECRET,  KEYCLOAK_AUTH_URI, KEYCLOAK_REALM_NAME, USERNAME, PASSWORD,  URI);
+        Connector connector = new ACEConnector();
         System.out.println("\r - Preparing service: creating authentication and service object\t[DONE]");
 
         // Execute
