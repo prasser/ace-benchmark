@@ -1,19 +1,24 @@
-# ACE Benchmark Driver
+# ACE Benchmark
 
 ## Overview
 
-TODO: Moved domain-name to tool settings
-
-This project is a Java-based benchmark driver designed to stress test ACE's REST API by creating multiple connections to various endpoints. It allows users to evaluate the performance, scalability, and stability of the REST API under high loads.
+This project implements a benchmark designed to stress test pseudonymization services and measure their throughput
+across different workload scenarios. It allows users to evaluate the performance, scalability, and stability of a
+service deployment under high loads. Through a connector abstraction, the benchmark can be applied to different
+pseudonymization services. We provide an exmaple implementation for the pseudonymization service ACE.
 
 ## Features
 
-- **Multiple Connections**: Simulate a large number of concurrent connections.
-- **Endpoint Testing**: Configure different endpoints to be evaluated.
-- **Customizable Requests**: Support for various HTTP methods and payloads.
-- **Metrics Collection**: Gather and report metrics like transactions per second, used storage.
+- **Multiple connections**: Simulate a large number of concurrent connections.
+- **Endpoint testing**: Configure different endpoints to be evaluated.
+- **Customizable requests**: Can be used to benchmark different services by implementing new connectors.
+- **Metrics Collection**: Gather and report metrics like transactions per second and used storage space.
 
 ## Prerequisites
 
 - Java 17 or higher
 - Maven (for building the project)
+
+## Configuration
+
+- Example configuration files can be found in the resources directory.
