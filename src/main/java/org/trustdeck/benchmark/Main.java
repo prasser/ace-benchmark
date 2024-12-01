@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-package org.trustdeck.benchmark.psneval;
+package org.trustdeck.benchmark;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,9 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.trustdeck.benchmark.http.HTTPAuthentication;
-import org.trustdeck.benchmark.http.HTTPException;
-import org.trustdeck.benchmark.psnservice.PSNService;
+import org.trustdeck.benchmark.connector.Connector;
+import org.trustdeck.benchmark.connector.ConnectorException;
+import org.trustdeck.benchmark.connector.ace.ACEConnector;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -42,30 +41,18 @@ import org.yaml.snakeyaml.Yaml;
  */
 public class Main {
 
-    public static void main(String[] args) throws URISyntaxException, HTTPException, IOException {
+    public static void main(String[] args) throws URISyntaxException, IOException, ConnectorException {
     	
     	// Load configuration from file
         Yaml yaml = new Yaml();
         InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("config.yaml");
         Map<String, Object> yamlConfig = yaml.load(inputStream);
 
-        // Extract the tool configuration from the loaded configuration file
-        @SuppressWarnings("unchecked")
-		Map<String, String> toolConfig = (Map<String, String>) yamlConfig.get("tool");
-        final String URI = toolConfig.get("uri");
-        final String CLIENT_ID = toolConfig.get("clientId");
-        final String CLIENT_SECRET = toolConfig.get("clientSecret");
-        final String KEYCLOAK_AUTH_URI = toolConfig.get("keycloakAuthUri");
-        final String KEYCLOAK_REALM_NAME = toolConfig.get("keycloakRealmName");
-        final String USERNAME = toolConfig.get("username");
-        final String PASSWORD = toolConfig.get("password");
-
         // Extract the benchmark configuration from the loaded configuration file
         @SuppressWarnings("unchecked")
 		Map<String, Object> benchmarkConfig = (Map<String, Object>) yamlConfig.get("benchmark");
         final int INITIAL_DB_SIZE = (int) benchmarkConfig.get("initialDbSize");
         final int MAX_TIME = (int) benchmarkConfig.get("maxTime");
-        final String DOMAIN_NAME = (String) benchmarkConfig.get("domainName");
         final int REPORTING_INTERVAL = (int) benchmarkConfig.get("reportingInterval");
         final boolean REPORT_DB_SPACE = (boolean) benchmarkConfig.get("reportDbSpace");
         final int REPORTING_INTERVAL_DB_SPACE = (int) benchmarkConfig.get("reportingIntervalDbSpace");
@@ -97,76 +84,78 @@ public class Main {
                         .setMaxTime(MAX_TIME)
                         .setName(name + "-" + NUM_THREADS + "-threads")
                         .setNumThreads(NUM_THREADS)
-                        .setDomainName(DOMAIN_NAME)
                         .setReportingInterval(REPORTING_INTERVAL)
                         .setReportingIntervalDBSpace(REPORTING_INTERVAL_DB_SPACE)
+                        .setReportDBSpace(REPORT_DB_SPACE)
                         .build());
             }
         }
+        
+
+        // Extract the tool configuration from the loaded configuration file
+        @SuppressWarnings("unchecked")
+        Map<String, String> toolConfig = (Map<String, String>) yamlConfig.get("tool");
+        final String URI = toolConfig.get("uri");
+        final String CLIENT_ID = toolConfig.get("clientId");
+        final String CLIENT_SECRET = toolConfig.get("clientSecret");
+        final String KEYCLOAK_AUTH_URI = toolConfig.get("keycloakAuthUri");
+        final String KEYCLOAK_REALM_NAME = toolConfig.get("keycloakRealmName");
+        final String USERNAME = toolConfig.get("username");
+        final String PASSWORD = toolConfig.get("password");
+        final String DOMAIN_NAME = (String) benchmarkConfig.get("domainName");
+
+        // Create connector
+        System.out.print("\r - Preparing service: creating authentication and service object");
+        Connector connector = new ACEConnector(URI, DOMAIN_NAME, CLIENT_ID, CLIENT_SECRET,  KEYCLOAK_AUTH_URI, KEYCLOAK_REALM_NAME, USERNAME, PASSWORD,  URI);
+        System.out.println("\r - Preparing service: creating authentication and service object\t[DONE]");
 
         // Execute
         for (Configuration config : configs) {
-            execute(config, CLIENT_ID, CLIENT_SECRET, KEYCLOAK_AUTH_URI, KEYCLOAK_REALM_NAME, USERNAME, PASSWORD, URI, REPORT_DB_SPACE);
+            execute(connector, config);
         }
     }
     
     /**
      * Executes a configuration.
      * 
+     * @param connector the connector to use
      * @param config the configuration object that should be used to run the benchmark
      * @throws IOException
      * @throws URISyntaxException
+     * @throws ConnectorException 
      */
-    private static final void execute(Configuration config, String CLIENT_ID, String CLIENT_SECRET, 
-    		String KEYCLOAK_AUTH_URI, String KEYCLOAK_REALM_NAME, String USERNAME, String PASSWORD, 
-    		String URI, boolean REPORT_DB_SPACE) throws IOException, URISyntaxException {
+    private static final void execute(Connector connector,
+                                      Configuration config) throws IOException, ConnectorException {
         // Some logging
         System.out.println("Executing configuration: " + config.getName());
-        System.out.println(" - Preparing service: ");
-        
-        // Authenticate
-        System.out.print("\r - Preparing service: creating authentication object");
-        HTTPAuthentication authentication = new HTTPAuthentication()
-                .setClientId(CLIENT_ID)
-                .setClientSecret(CLIENT_SECRET)
-                .setKeycloakAuthenticationURI(KEYCLOAK_AUTH_URI)
-                .setKeycloakRealmName(KEYCLOAK_REALM_NAME)
-                .setUsername(USERNAME)
-                .setPassword(PASSWORD);
-        System.out.println("\r - Preparing service: creating authentication object\t[DONE]");
-        
-        // Service
-        System.out.print("\r - Preparing service: creating service object                      ");
-        PSNService service = new PSNService(new URI(URI));
-        System.out.println("\r - Preparing service: creating service object\t\t[DONE]");
         
         // Identifiers
-        System.out.print("\r - Preparing service: creating identifiers                      ");
+        System.out.print("\r - Preparing benchmark: creating identifiers                      ");
         Identifiers identifiers = new Identifiers();
-        System.out.println("\r - Preparing service: creating identifiers\t\t[DONE]");
+        System.out.println("\r - Preparing benchmark: creating identifiers\t\t[DONE]");
 
         // Statistics
-        System.out.print("\r - Preparing service: creating statistics                      ");
+        System.out.print("\r - Preparing benchmark: creating statistics                      ");
         Statistics statistics = new Statistics(config);
-        System.out.println("\r - Preparing service: creating statistics\t\t[DONE]");
+        System.out.println("\r - Preparing benchmark: creating statistics\t\t[DONE]");
         
         // Provider
-        System.out.print("\r - Preparing service: creating work provider                      ");
+        System.out.print("\r - Preparing benchmark: creating work provider                      ");
         WorkProvider provider = new WorkProvider(config, identifiers, statistics);
-        System.out.println("\r - Preparing service: creating work provider\t\t[DONE]");
+        System.out.println("\r - Preparing benchmark: creating work provider\t\t[DONE]");
         
         // Prepare
-        System.out.print("\r - Preparing service: purge database and re-initialize            ");
-        provider.prepare(authentication, service);
-        System.out.println("\r - Preparing service: purge database and re-initialize\t[DONE]");
+        System.out.print("\r - Preparing benchmark: purge database and re-initialize            ");
+        provider.prepare(connector);
+        System.out.println("\r - Preparing benchmark: purge database and re-initialize\t[DONE]");
         
         // Some logging
-        System.out.println("\r - Preparing service: Done                                              ");
+        System.out.println("\r - Preparing benchmark: Done                                              ");
         
         // Start workers
         statistics.start();
         for (int i = 0; i < config.getNumThreads(); i++) {
-            new Worker(authentication, service, provider).start();
+            new Worker(provider).start();
         }
         
         // Some logging
@@ -174,7 +163,7 @@ public class Main {
         
         // Files to write to
         BufferedWriter writer = new BufferedWriter(new FileWriter(new File(config.getName() + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")) + ".csv")));
-        BufferedWriter dbWriter = REPORT_DB_SPACE ? new BufferedWriter(new FileWriter(new File(config.getName() + "_DB_STORAGE-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")) + ".csv"))) : null;
+        BufferedWriter dbWriter = config.isReportDBSpace() ? new BufferedWriter(new FileWriter(new File(config.getName() + "_DB_STORAGE-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")) + ".csv"))) : null;
         
         // Event and logging loop
         while (true) {
@@ -189,8 +178,8 @@ public class Main {
             }
             
             // Reporting DB storage size
-            if (REPORT_DB_SPACE && System.currentTimeMillis() - statistics.getLastTimeDB() >= config.getReportingIntervalDBSpace()) {
-                statistics.reportDBStorage(dbWriter, provider, authentication, service);
+            if (config.isReportDBSpace() && System.currentTimeMillis() - statistics.getLastTimeDB() >= config.getReportingIntervalDBSpace()) {
+                statistics.reportDBStorage(dbWriter, provider);
                 dbWriter.flush();
             }
             
@@ -215,7 +204,7 @@ public class Main {
         
         // Close writer
         writer.close();
-        if (REPORT_DB_SPACE) {
+        if (config.isReportDBSpace()) {
         	dbWriter.close();
         }
         

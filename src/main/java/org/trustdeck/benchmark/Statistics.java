@@ -15,16 +15,13 @@
  * limitations under the License.
  */
 
-package org.trustdeck.benchmark.psneval;
+package org.trustdeck.benchmark;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.StringIndexOutOfBoundsException;
-import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.trustdeck.benchmark.http.HTTPAuthentication;
-import org.trustdeck.benchmark.psnservice.PSNService;
+import org.trustdeck.benchmark.connector.ConnectorException;
 
 import lombok.Getter;
 
@@ -205,15 +202,16 @@ public class Statistics {
     * Reporting DB storage. NOT thread safe.
     * 
     * @throws IOException 
+     * @throws ConnectorException 
     */
-   public void reportDBStorage(Writer writer, WorkProvider provider, HTTPAuthentication authentication, PSNService service) throws IOException, URISyntaxException {
+   public void reportDBStorage(Writer writer, WorkProvider provider) throws ConnectorException, IOException {
 	   
        // Collect data
        long currentTime = System.currentTimeMillis();
        
-       String d = provider.getDBStorageMetrics(authentication, service, "domain");
-       String p = provider.getDBStorageMetrics(authentication, service, "pseudonym");
-       String a = provider.getDBStorageMetrics(authentication, service, "auditevent");
+       String d = provider.getDBStorageMetrics("domain");
+       String p = provider.getDBStorageMetrics("pseudonym");
+       String a = provider.getDBStorageMetrics("auditevent");
        
        // Derive parameters
        long domainSize, domainRecordCount, domainDBSize, pseudonymSize, pseudonymRecordCount, pseudonymDBSize, auditeventSize, auditeventRecordCount, auditeventDBSize;

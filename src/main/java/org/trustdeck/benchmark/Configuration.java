@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.trustdeck.benchmark.psneval;
+package org.trustdeck.benchmark;
 
 import lombok.Getter;
 
@@ -51,14 +51,14 @@ public class Configuration {
     /** Name of the benchmark run. */
     private final String name;
     
-    /** Name of the domain in which the benchmarking operations should be performed. */
-    private final String domainName;
-    
     /** Number of records created already at preparation stage. */
     private final int initialDBSize;
     
     /** Interval of performance recording in milliseconds. */
     private final int reportingInterval;
+    
+    /** Report DB space*/
+    private final boolean reportDBSpace;
     
     /** Interval of database storage check recording in milliseconds. */
     private final int reportingIntervalDBSpace;
@@ -74,9 +74,9 @@ public class Configuration {
      * @param numThreads
      * @param maxTime
      * @param name
-     * @param domainName
      * @param initialDBSize
      * @param reportingInterval
+     * @param reportDBSpace
      * @param reportingIntervalDBSpace
      */
     private Configuration(int createRate,
@@ -87,9 +87,9 @@ public class Configuration {
                           int numThreads,
                           int maxTime,
                           String name,
-                          String domainName,
                           int initialDBSize,
                           int reportingInterval,
+                          boolean reportDBSpace,
                           int reportingIntervalDBSpace) {
         this.readRate = readRate;
         this.createRate = createRate;
@@ -99,9 +99,9 @@ public class Configuration {
         this.numThreads = numThreads;
         this.maxTime = maxTime;
         this.name = name;
-        this.domainName = domainName;
         this.initialDBSize = initialDBSize;
         this.reportingInterval = reportingInterval;
+        this.reportDBSpace = reportDBSpace;
         this.reportingIntervalDBSpace = reportingIntervalDBSpace;
     }
     
@@ -143,11 +143,11 @@ public class Configuration {
         /** Name of the benchmark run. */
         private String name;
         
-        /** Name of the domain in which the benchmarking operations should be performed. */
-        private String domainName;
-        
         /** Number of records created already at preparation stage. */
         private int initialDBSize;
+        
+        /** Whether to report DB space*/
+        private boolean reportDBSpace;
         
         /** Interval of performance recording in milliseconds. */
         private int reportingInterval;
@@ -174,8 +174,8 @@ public class Configuration {
                 throw new IllegalStateException("Max time must be 0 and the other must be positive ");
             }
             
-            if (name == null || domainName == null) {
-                throw new IllegalStateException("Domain name and name must not be null!");
+            if (name == null) {
+                throw new IllegalStateException("Name must not be null!");
             }
             
             if (initialDBSize == 0 && (readRate > 0 || updateRate > 0 || deleteRate > 0)) {
@@ -191,7 +191,7 @@ public class Configuration {
             }
             
             // Create object
-            return new Configuration(createRate, readRate, updateRate, deleteRate, pingRate, numThreads, maxTime, name, domainName, initialDBSize, reportingInterval, reportingIntervalDBSpace);
+            return new Configuration(createRate, readRate, updateRate, deleteRate, pingRate, numThreads, maxTime, name, initialDBSize, reportingInterval, reportDBSpace, reportingIntervalDBSpace);
         }
         
         // SETTERS SECTION (these allow chaining).
@@ -259,15 +259,7 @@ public class Configuration {
             this.name = name;
             return this;
         }
-    
-        /**
-         * @param domainName the domainName to set
-         */
-        public ConfigurationBuilder setDomainName(String domainName) {
-            this.domainName = domainName;
-            return this;
-        }
-        
+
         /**
          * @param initialDBSize The number of records created before the evaluation starts
          */
@@ -291,6 +283,16 @@ public class Configuration {
          */
         public ConfigurationBuilder setReportingIntervalDBSpace(int reportingIntervalDBSpace) {
             this.reportingIntervalDBSpace = reportingIntervalDBSpace;
+            return this;
+        }
+
+        /**
+         * Set whether to report DB space
+         * @param reportDBSpace
+         * @return
+         */
+        public ConfigurationBuilder setReportDBSpace(boolean reportDBSpace) {
+            this.reportDBSpace = reportDBSpace;
             return this;
         }
     }

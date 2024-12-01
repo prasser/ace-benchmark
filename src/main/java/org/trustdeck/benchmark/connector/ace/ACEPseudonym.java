@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-package org.trustdeck.benchmark.psnservice;
+package org.trustdeck.benchmark.connector.ace;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.trustdeck.benchmark.connector.Pseudonym;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -32,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "id", "idType", "validFrom", "validityTime" })
-public class Pseudonym {
+public class ACEPseudonym implements Pseudonym {
 
 	/** The pseudonym's identifier. */
     @JsonProperty("id")
@@ -58,7 +60,7 @@ public class Pseudonym {
      * No args constructor for use in serialization.
      *
      */
-    public Pseudonym() {
+    public ACEPseudonym() {
     	// Emtpy by design
     }
     
@@ -68,7 +70,7 @@ public class Pseudonym {
      * @param id
      * @param idType
      */
-    public Pseudonym(String id, String idType) {
+    public ACEPseudonym(String id, String idType) {
         this.id = id;
         this.idType = idType;
     }
@@ -81,7 +83,7 @@ public class Pseudonym {
      * @param id
      * @param validFrom
      */
-    public Pseudonym(String id, String idType, String validFrom, String validityTime) {
+    public ACEPseudonym(String id, String idType, String validFrom, String validityTime) {
         super();
         this.id = id;
         this.idType = idType;
@@ -89,62 +91,74 @@ public class Pseudonym {
         this.validityTime = validityTime;
     }
 
+    @Override
     @JsonProperty("id")
     public String getId() {
         return id;
     }
 
+    @Override
     @JsonProperty("id")
     public void setId(String id) {
         this.id = id;
     }
 
-    public Pseudonym withId(String id) {
+    @Override
+    public ACEPseudonym withId(String id) {
         this.id = id;
         return this;
     }
 
+    @Override
     @JsonProperty("idType")
     public String getIdType() {
         return idType;
     }
 
+    @Override
     @JsonProperty("idType")
     public void setIdType(String idType) {
         this.idType = idType;
     }
 
-    public Pseudonym withIdType(String idType) {
+    @Override
+    public ACEPseudonym withIdType(String idType) {
         this.idType = idType;
         return this;
     }
 
+    @Override
     @JsonProperty("validFrom")
     public String getValidFrom() {
         return validFrom;
     }
 
+    @Override
     @JsonProperty("validFrom")
     public void setValidFrom(String validFrom) {
         this.validFrom = validFrom;
     }
 
-    public Pseudonym withValidFrom(String validFrom) {
+    @Override
+    public ACEPseudonym withValidFrom(String validFrom) {
         this.validFrom = validFrom;
         return this;
     }
 
+    @Override
     @JsonProperty("validityTime")
     public String getValidityTime() {
         return validityTime;
     }
 
+    @Override
     @JsonProperty("validityTime")
     public void setValidityTime(String validityTime) {
         this.validityTime = validityTime;
     }
 
-    public Pseudonym withValidityTime(String validityTime) {
+    @Override
+    public ACEPseudonym withValidityTime(String validityTime) {
         this.validityTime = validityTime;
         return this;
     }

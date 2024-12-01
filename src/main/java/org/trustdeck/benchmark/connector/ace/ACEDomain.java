@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.trustdeck.benchmark.psnservice;
+package org.trustdeck.benchmark.connector.ace;
+
+import org.trustdeck.benchmark.connector.Domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "name", "prefix", "validFrom", "validityTime", "description" })
-public class Domain {
+public class ACEDomain implements Domain {
 	
 	/** The domain's . */
     @JsonProperty("name")
@@ -53,7 +55,7 @@ public class Domain {
     /**
      * Creates a new instance.
      */
-    public Domain() {
+    public ACEDomain() {
     	// Empty by design
     }
 
@@ -66,7 +68,7 @@ public class Domain {
      * @param description
      * @param validFrom
      */
-    public Domain(String name,
+    public ACEDomain(String name,
                   String prefix,
                   String validFrom,
                   String validityTime,
@@ -85,81 +87,96 @@ public class Domain {
      * @param name
      * @param prefix
      */
-    public Domain(String name, String prefix) {
+    public ACEDomain(String name, String prefix) {
         this.name = name;
         this.prefix = prefix;
     }
 
+    @Override
     @JsonProperty("name")
     public String getName() {
         return name;
     }
 
+    @Override
     @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public Domain withName(String name) {
         this.name = name;
         return this;
     }
 
+    @Override
     @JsonProperty("prefix")
     public String getPrefix() {
         return prefix;
     }
 
+    @Override
     @JsonProperty("prefix")
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
+    @Override
     public Domain withPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
 
+    @Override
     @JsonProperty("validFrom")
     public String getValidFrom() {
         return validFrom;
     }
 
+    @Override
     @JsonProperty("validFrom")
     public void setValidFrom(String validFrom) {
         this.validFrom = validFrom;
     }
 
+    @Override
     public Domain withValidFrom(String validFrom) {
         this.validFrom = validFrom;
         return this;
     }
 
+    @Override
     @JsonProperty("validityTime")
     public String getValidityTime() {
         return validityTime;
     }
 
+    @Override
     @JsonProperty("validityTime")
     public void setValidityTime(String validityTime) {
         this.validityTime = validityTime;
     }
 
+    @Override
     public Domain withValidityTime(String validityTime) {
         this.validityTime = validityTime;
         return this;
     }
 
+    @Override
     @JsonProperty("description")
     public String getDescription() {
         return description;
     }
 
+    @Override
     @JsonProperty("description")
     public void setDescription(String description) {
         this.description = description;
     }
 
+    @Override
     public Domain withDescription(String description) {
         this.description = description;
         return this;
