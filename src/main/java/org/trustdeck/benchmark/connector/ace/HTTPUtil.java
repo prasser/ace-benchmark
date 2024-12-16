@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.trustdeck.benchmark.http;
+package org.trustdeck.benchmark.connector.ace;
 
 import jakarta.ws.rs.core.Response;
 
