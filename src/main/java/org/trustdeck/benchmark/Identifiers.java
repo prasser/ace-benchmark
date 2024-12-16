@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Identifiers {
     
     /** Provides randomness. */
-    private static final Random RANDOM  = new Random();
+    private static final Random RANDOM  = new Random(735576300);
     
     /** Prefix. */
     private static final String PREFIX  = "ID";

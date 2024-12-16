@@ -27,7 +27,7 @@ import java.util.Random;
 public class WorkDistribution {
     
     /** Provides randomness. */
-    private static final Random RANDOM  = new Random();
+    private static final Random RANDOM = new Random(677321100);
     
     /**
      * Types of work.
