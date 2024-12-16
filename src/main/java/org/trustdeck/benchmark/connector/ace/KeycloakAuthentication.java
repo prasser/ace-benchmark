@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.trustdeck.benchmark.http;
+package org.trustdeck.benchmark.connector.ace;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.token.TokenManager;
@@ -25,7 +24,7 @@ import org.keycloak.admin.client.token.TokenManager;
  * 
  * @author Fabian Prasser and Armin Müller
  */
-public class HTTPAuthentication {
+public class KeycloakAuthentication {
     
     /** Name of the user utilized for the benchmarking process. */
     protected String username;
@@ -51,14 +50,14 @@ public class HTTPAuthentication {
     /**
      * Basic constructor.
      */
-    public HTTPAuthentication() {
+    public KeycloakAuthentication() {
         // Empty by design
     }
 
     /**
      * @param username the username to set
      */
-    public HTTPAuthentication setUsername(String username) {
+    public KeycloakAuthentication setUsername(String username) {
         this.username = username;
         return this;
     }
@@ -66,7 +65,7 @@ public class HTTPAuthentication {
     /**
      * @param password the password to set
      */
-    public HTTPAuthentication setPassword(String password) {
+    public KeycloakAuthentication setPassword(String password) {
         this.password = password;
         return this;
     }
@@ -74,7 +73,7 @@ public class HTTPAuthentication {
     /**
      * @param clientId the clientId to set
      */
-    public HTTPAuthentication setClientId(String clientId) {
+    public KeycloakAuthentication setClientId(String clientId) {
         this.clientId = clientId;
         return this;
     }
@@ -82,7 +81,7 @@ public class HTTPAuthentication {
     /**
      * @param clientSecret the clientSecret to set
      */
-    public HTTPAuthentication setClientSecret(String clientSecret) {
+    public KeycloakAuthentication setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
         return this;
     }
@@ -90,7 +89,7 @@ public class HTTPAuthentication {
     /**
      * @param keycloakAuthenticationURI the keycloakAuthenticationURI to set
      */
-    public HTTPAuthentication setKeycloakAuthenticationURI(String keycloakAuthenticationURI) {
+    public KeycloakAuthentication setKeycloakAuthenticationURI(String keycloakAuthenticationURI) {
         this.keycloakAuthenticationURI = keycloakAuthenticationURI;
         return this;
     }
@@ -98,7 +97,7 @@ public class HTTPAuthentication {
     /**
      * @param keycloakRealmName the keycloakRealmName to set
      */
-    public HTTPAuthentication setKeycloakRealmName(String keycloakRealmName) {
+    public KeycloakAuthentication setKeycloakRealmName(String keycloakRealmName) {
         this.keycloakRealmName = keycloakRealmName;
         return this;
     }

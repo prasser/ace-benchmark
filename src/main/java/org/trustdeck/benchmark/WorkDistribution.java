@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.trustdeck.benchmark.psneval;
+package org.trustdeck.benchmark;
 
 import java.util.Random;
 

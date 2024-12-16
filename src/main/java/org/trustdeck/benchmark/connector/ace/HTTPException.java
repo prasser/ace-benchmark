@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.trustdeck.benchmark.http;
+package org.trustdeck.benchmark.connector.ace;
 
 /**
  * This class represents a general error state for the benchmark driver.
