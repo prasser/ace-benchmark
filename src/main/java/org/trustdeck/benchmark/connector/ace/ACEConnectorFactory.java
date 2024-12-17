@@ -74,4 +74,9 @@ public class ACEConnectorFactory implements ConnectorFactory {
         connector.prepare();
         return connector;
     }
+
+    @Override
+    public void shutdown() {
+        HTTPClientManager.shutdown();
+    }
 }

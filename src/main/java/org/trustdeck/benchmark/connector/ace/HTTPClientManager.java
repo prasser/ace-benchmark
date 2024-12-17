@@ -39,7 +39,7 @@ public class HTTPClientManager {
      * 
      * @return the client object
      */
-    public static Client getClient() {
+    static Client getClient() {
         // Double-checked-locking improves performance since thread 
     	// safety is only needed when creating the client for the first time.
     	if (client == null) {
@@ -56,7 +56,7 @@ public class HTTPClientManager {
     /**
      * Closes the client and unsets the class object.
      */
-    public static void shutdown() {
+    static void shutdown() {
         if (client != null) {
             client.close();
             client = null;

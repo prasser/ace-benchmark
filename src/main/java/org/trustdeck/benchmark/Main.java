@@ -196,8 +196,8 @@ public class Main {
         	dbWriter.close();
         }
         
-        // Close client
-        HTTPClientManager.shutdown();
+        // Close factory and free all resources
+        factory.shutdown();
         
         // Some logging
         System.out.println(" - Done");
