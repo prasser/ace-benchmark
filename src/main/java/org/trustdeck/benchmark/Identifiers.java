@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.trustdeck.benchmark.psneval;
+package org.trustdeck.benchmark;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Identifiers {
     
     /** Provides randomness. */
-    private static final Random RANDOM  = new Random();
+    private static final Random RANDOM  = new Random(735576300);
     
     /** Prefix. */
     private static final String PREFIX  = "ID";

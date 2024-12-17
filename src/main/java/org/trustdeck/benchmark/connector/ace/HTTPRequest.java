@@ -14,15 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.trustdeck.benchmark.http;
+package org.trustdeck.benchmark.connector.ace;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation.Builder;
 import jakarta.ws.rs.client.WebTarget;
@@ -53,6 +51,9 @@ public class HTTPRequest {
         TEXT_PLAIN,
         APPLICATION_JSON
     };
+    
+    /** The web client object needed to generate and send requests. */
+    private final Client client;
     
     /** The server to where the request should go to. */
     private final URI server;
@@ -102,15 +103,10 @@ public class HTTPRequest {
      * @param bodyMediaType
      */
     public HTTPRequest(URI server, String path, HTTPRequestType requestType, String authToken, String body, HTTPMediaType bodyMediaType) {
-        
-        this.server = server;
-        this.path = path;
-        this.requestType = requestType;
-        this.authToken = authToken;
-        this.body = body;
-        this.bodyMediaType = bodyMediaType != null ? bodyMediaType : 
-             (requestType == HTTPRequestType.POST || requestType == HTTPRequestType.PUT ? HTTPMediaType.APPLICATION_JSON : HTTPMediaType.TEXT_PLAIN);
-        this.parameters = null;
+    	this(server, path, requestType, authToken, body, 
+        		bodyMediaType != null ? bodyMediaType : 
+        			(requestType == HTTPRequestType.POST || requestType == HTTPRequestType.PUT ? HTTPMediaType.APPLICATION_JSON : HTTPMediaType.TEXT_PLAIN),
+        		null);
     }
     
     /**
@@ -125,7 +121,7 @@ public class HTTPRequest {
      * @param parameters
      */
     public HTTPRequest(URI server, String path, HTTPRequestType requestType, String authToken, String body, HTTPMediaType bodyMediaType, Map<String, String> parameters) {
-        
+        this.client = ClientManager.getClient();
         this.server = server;
         this.path = path;
         this.requestType = requestType;
@@ -146,60 +142,64 @@ public class HTTPRequest {
         
         // Create target
         // newClient might be expensive? Use one client?
-    	Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(server).path(path);
-        
-        if (parameters != null && !parameters.isEmpty()) {
-            for (Entry<String, String> parameter : parameters.entrySet()) {
-                target = target.queryParam(parameter.getKey(), parameter.getValue());
-            }
-        }
-        
-        // Build request
-        Builder builder = target.request();
-        builder.header("Authorization", String.format("Bearer %s", authToken));
-        
-        // Handle media type
-        String type = null;
-        
-        switch (bodyMediaType) {
-	        case APPLICATION_JSON:
-	            type = MediaType.APPLICATION_JSON;
-	            break;
-	        case TEXT_PLAIN:
-	            type = MediaType.TEXT_PLAIN;
-	            break;
-	        default:
-	            throw new IllegalStateException("Unknown media type");
-        }
-        
-        // Execute request
-        Response response = null;
-        
-        switch (requestType) {
-	        case GET:
-	        	response = builder.get(Response.class);
-	            break;
-	        case POST:
-	        	if (body == null || type == null) {
-	                throw new IllegalArgumentException("Body and media type must not be null.");
-	            }
-	            response = builder.post(Entity.entity(body, type));
-	            break;
-	        case PUT:
-	        	if (body == null || type == null) {
-	                throw new IllegalArgumentException("Body and media type must not be null.");
-	            }
-	            response = builder.put(Entity.entity(body, type));
-	            break;
-	        case DELETE:
-	        	response = builder.delete(Response.class);
-	            break;
-	        default:
-	            throw new IllegalStateException("Unknown request type.");
-        }
-        
-        // Done
-        return response.readEntity(String.class);
+    	//Client client = ClientBuilder.newClient();
+		try {
+			WebTarget target = this.client.target(server).path(path);
+			
+			if (parameters != null && !parameters.isEmpty()) {
+				for (Entry<String, String> parameter : parameters.entrySet()) {
+					target = target.queryParam(parameter.getKey(), parameter.getValue());
+				}
+			}
+			
+			// Build request
+			Builder builder = target.request();
+			builder.header("Authorization", String.format("Bearer %s", authToken));
+			
+			// Handle media type
+			String type = null;
+			
+			switch (bodyMediaType) {
+				case APPLICATION_JSON:
+					type = MediaType.APPLICATION_JSON;
+					break;
+				case TEXT_PLAIN:
+					type = MediaType.TEXT_PLAIN;
+					break;
+				default:
+					throw new IllegalStateException("Unknown media type");
+			}
+			
+			// Execute request
+			Response response = null;
+			
+			switch (requestType) {
+				case GET:
+					response = builder.get(Response.class);
+					break;
+				case POST:
+					if (body == null || type == null) {
+						throw new IllegalArgumentException("Body and media type must not be null.");
+					}
+					response = builder.post(Entity.entity(body, type));
+					break;
+				case PUT:
+					if (body == null || type == null) {
+						throw new IllegalArgumentException("Body and media type must not be null.");
+					}
+					response = builder.put(Entity.entity(body, type));
+					break;
+				case DELETE:
+					response = builder.delete(Response.class);
+					break;
+				default:
+					throw new IllegalStateException("Unknown request type.");
+			}
+			
+			// Read and return the response entity
+			return response.readEntity(String.class);
+		} finally {
+			// Do nothing
+		}
     }
 }
