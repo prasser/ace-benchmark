@@ -30,10 +30,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.trustdeck.benchmark.connector.ConnectorException;
-import org.trustdeck.benchmark.connector.ace.ACEConnector;
-import org.trustdeck.benchmark.connector.ace.ClientManager;
 import org.trustdeck.benchmark.connector.ConnectorFactory;
 import org.trustdeck.benchmark.connector.ace.ACEConnectorFactory;
+import org.trustdeck.benchmark.connector.ace.ClientManager;
 import org.yaml.snakeyaml.Yaml;
 
 /**
