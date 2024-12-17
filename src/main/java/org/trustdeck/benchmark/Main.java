@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.trustdeck.benchmark.connector.Connector;
 import org.trustdeck.benchmark.connector.ConnectorException;
-import org.trustdeck.benchmark.connector.ace.ACEConnector;
+import org.trustdeck.benchmark.connector.ConnectorFactory;
+import org.trustdeck.benchmark.connector.ace.ACEConnectorFactory;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -90,30 +90,26 @@ public class Main {
                         .build());
             }
         }
-        
-
-        // Create connector
-        System.out.print("\r - Preparing service: creating authentication and service object");
-        Connector connector = new ACEConnector();
-        System.out.println("\r - Preparing service: creating authentication and service object\t[DONE]");
 
         // Execute
+        ConnectorFactory factory = new ACEConnectorFactory();
         for (Configuration config : configs) {
-            execute(connector, config);
+            execute(config, factory);
         }
     }
     
     /**
      * Executes a configuration.
      * 
-     * @param connector the connector to use
-     * @param config the configuration object that should be used to run the benchmark
+     * @param config The configuration object that should be used to run the benchmark
+     * @param factory Connector factory
      * @throws IOException
      * @throws URISyntaxException
      * @throws ConnectorException 
      */
-    private static final void execute(Connector connector,
-                                      Configuration config) throws IOException, ConnectorException {
+    private static final void execute(Configuration config,
+                                      ConnectorFactory factory) throws IOException, ConnectorException {
+        
         // Some logging
         System.out.println("Executing configuration: " + config.getName());
         
@@ -129,12 +125,12 @@ public class Main {
         
         // Provider
         System.out.print("\r - Preparing benchmark: creating work provider                      ");
-        WorkProvider provider = new WorkProvider(config, identifiers, statistics);
+        WorkProvider provider = new WorkProvider(config, identifiers, statistics, factory);
         System.out.println("\r - Preparing benchmark: creating work provider\t\t[DONE]");
         
         // Prepare
         System.out.print("\r - Preparing benchmark: purge database and re-initialize            ");
-        provider.prepare(connector);
+        provider.prepare();
         System.out.println("\r - Preparing benchmark: purge database and re-initialize\t[DONE]");
         
         // Some logging

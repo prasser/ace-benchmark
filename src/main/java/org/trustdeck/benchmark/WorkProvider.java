@@ -19,6 +19,7 @@ package org.trustdeck.benchmark;
 
 import org.trustdeck.benchmark.connector.Connector;
 import org.trustdeck.benchmark.connector.ConnectorException;
+import org.trustdeck.benchmark.connector.ConnectorFactory;
 
 /**
  * Class that provides the work for the worker threads.
@@ -38,9 +39,9 @@ public class WorkProvider {
     
     /** The statistics object. */
     private Statistics statistics;
-    
-    /** The connector. */
-    private Connector connector;
+
+    /** Thread local connectors*/
+    private ThreadLocal<Connector> threadLocalConnectors;
     
     /**
      * Creates a new instance.
@@ -49,12 +50,26 @@ public class WorkProvider {
      * @param identifiers
      * @param statistics
      */
-    public WorkProvider(Configuration config, Identifiers identifiers, Statistics statistics) {
+    public WorkProvider(Configuration config, 
+                        Identifiers identifiers, 
+                        Statistics statistics,
+                        ConnectorFactory factory) {
         
         // Store config
         this.config = config;
         this.identifiers = identifiers;
         this.statistics = statistics;
+
+        // Prepare thread-local instances 
+        this.threadLocalConnectors =
+                ThreadLocal.withInitial(() -> {
+                    try {
+                        return factory.create();
+                    } catch (ConnectorException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+        
         
         // Distribution of work
         this.distribution = new WorkDistribution(config.getCreateRate(),
@@ -71,12 +86,13 @@ public class WorkProvider {
      * @param connector
      * @throws ConnectorException
      */
-    public void prepare(Connector connector) throws ConnectorException {
-        this.connector = connector;
-        this.connector.prepare();
+    public void prepare() throws ConnectorException {
+
+        // Create initial pseudonym pool
         for (int i = 0; i < config.getInitialDBSize(); i++) {
-            this.connector.createPseudonym(identifiers.create());
+            threadLocalConnectors.get().createPseudonym(identifiers.create());
         }
+        
     }
     
     /**
@@ -86,7 +102,7 @@ public class WorkProvider {
      * @throws ConnectorException
      */
     public String getDBStorageMetrics(String storageIdentifier) throws ConnectorException {
-        return this.connector.getStorageConsumption(storageIdentifier);
+        return threadLocalConnectors.get().getStorageConsumption(storageIdentifier);
         
     }
     
@@ -96,6 +112,9 @@ public class WorkProvider {
      * @return the work
      */
     public Runnable getWork() {
+        
+        // Obtain thread-local connector
+        Connector connector = threadLocalConnectors.get();
         
         // Get the template according to the defined distribution
         switch(distribution.sample()) {
