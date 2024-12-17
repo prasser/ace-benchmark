@@ -25,7 +25,8 @@ import jakarta.ws.rs.client.ClientBuilder;
  * @author Armin Müller
  */
 public class ClientManager {
-	/** The web client object needed to create requests. Marked volatile, so that every thread sees changes made to it. */
+    
+	/** The web client object needed to create requests. */
     private static volatile Client client;
 
     /**
