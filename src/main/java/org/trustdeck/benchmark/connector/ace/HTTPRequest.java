@@ -1,6 +1,6 @@
 /*
  * ACE-Benchmark Driver
- * Copyright 2024 Armin Müller and contributors.
+ * Copyright 2024 Armin MÃ¼ller and contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import jakarta.ws.rs.core.Response;
 /**
  * This class is used to build and execute HTTP requests.
  * 
- * @author Armin Müller, Felix N. Wirth, and Fabian Prasser
+ * @author Armin MÃ¼ller, Felix N. Wirth, and Fabian Prasser
  */
 public class HTTPRequest {
     
@@ -142,7 +142,6 @@ public class HTTPRequest {
         
         // Create target
 		try {
-		    
 			WebTarget target = this.client.target(server).path(path);
 			
 			if (parameters != null && !parameters.isEmpty()) {
@@ -197,7 +196,6 @@ public class HTTPRequest {
 			
 			// Read and return the response entity
 			return response.readEntity(String.class);
-			
 		} finally {
 			// Do nothing
 		}
