@@ -141,9 +141,8 @@ public class HTTPRequest {
     public String execute() {
         
         // Create target
-        // newClient might be expensive? Use one client?
-    	//Client client = ClientBuilder.newClient();
 		try {
+		    
 			WebTarget target = this.client.target(server).path(path);
 			
 			if (parameters != null && !parameters.isEmpty()) {
@@ -198,6 +197,7 @@ public class HTTPRequest {
 			
 			// Read and return the response entity
 			return response.readEntity(String.class);
+			
 		} finally {
 			// Do nothing
 		}
