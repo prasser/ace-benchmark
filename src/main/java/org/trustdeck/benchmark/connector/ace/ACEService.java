@@ -194,11 +194,11 @@ public class ACEService implements PseudonymizationService<ACEToken, ACEDomain, 
     public void createPseudonym(ACEToken token, ACEDomain domain, ACEPseudonym pseudonym) throws URISyntaxException, HTTPException, JsonProcessingException {
     	// Build the request
     	HTTPRequest request = new HTTPRequest(service, 
-    			"/domains/" + domain.getName() + "/pseudonym", 
-    			HTTPRequestType.POST, 
-    			token.getToken(), 
-    			MAPPER.writer().writeValueAsString(pseudonym), 
-    			HTTPMediaType.APPLICATION_JSON);
+											  "/domains/" + domain.getName() + "/pseudonym", 
+											  HTTPRequestType.POST, 
+											  token.getToken(), 
+											  MAPPER.writer().writeValueAsString(pseudonym), 
+											  HTTPMediaType.APPLICATION_JSON);
     	
     	// Execute
     	request.execute();
@@ -223,10 +223,10 @@ public class ACEService implements PseudonymizationService<ACEToken, ACEDomain, 
         
         // Build the request
         HTTPRequest request = new HTTPRequest(service, 
-                "/domains/" + domain.getName() + "/pseudonym", 
-                HTTPRequestType.GET, 
-                token.getToken(),
-                parameters);
+											  "/domains/" + domain.getName() + "/pseudonym", 
+											  HTTPRequestType.GET, 
+											  token.getToken(),
+											  parameters);
         
         // Execute
         request.execute();
@@ -251,12 +251,12 @@ public class ACEService implements PseudonymizationService<ACEToken, ACEDomain, 
         
         // Build the request
         HTTPRequest request = new HTTPRequest(service, 
-                "/domains/" + domain.getName() + "/pseudonym", 
-                HTTPRequestType.PUT, 
-                token.getToken(), 
-                MAPPER.writer().writeValueAsString(pseudonym), 
+        									  "/domains/" + domain.getName() + "/pseudonym", 
+        									  HTTPRequestType.PUT, 
+        									  token.getToken(), 
+        									  MAPPER.writer().writeValueAsString(pseudonym), 
                 HTTPMediaType.APPLICATION_JSON,
-                parameters);
+				  parameters);
         
         // Execute
         request.execute();
@@ -281,10 +281,10 @@ public class ACEService implements PseudonymizationService<ACEToken, ACEDomain, 
         
         // Build the request
         HTTPRequest request = new HTTPRequest(service, 
-                "/domains/" + domain.getName() + "/pseudonym", 
-                HTTPRequestType.DELETE, 
-                token.getToken(),
-                parameters);
+        									  "/domains/" + domain.getName() + "/pseudonym", 
+        									  HTTPRequestType.DELETE, 
+        									  token.getToken(),
+        									  parameters);
         
         // Execute
         request.execute();

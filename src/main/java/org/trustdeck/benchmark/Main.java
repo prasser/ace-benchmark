@@ -1,6 +1,6 @@
 /*
  * ACE-Benchmark Driver
- * Copyright 2024 Armin Müller and contributors.
+ * Copyright 2024 Armin MÃ¼ller and contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.trustdeck.benchmark.connector.ConnectorException;
+import org.trustdeck.benchmark.connector.ace.ACEConnector;
+import org.trustdeck.benchmark.connector.ace.ClientManager;
 import org.trustdeck.benchmark.connector.ConnectorFactory;
 import org.trustdeck.benchmark.connector.ace.ACEConnectorFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -37,7 +39,7 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * Main class of the benchmark driver.
  * 
- * @author Armin Müller, Felix N. Wirth, and Fabian Prasser
+ * @author Armin MÃ¼ller, Felix N. Wirth, and Fabian Prasser
  */
 public class Main {
 
@@ -116,12 +118,12 @@ public class Main {
         // Identifiers
         System.out.print("\r - Preparing benchmark: creating identifiers                      ");
         Identifiers identifiers = new Identifiers();
-        System.out.println("\r - Preparing benchmark: creating identifiers\t\t[DONE]");
+        System.out.println("\r - Preparing benchmark: creating identifiers\t\t\t\t[DONE]");
 
         // Statistics
         System.out.print("\r - Preparing benchmark: creating statistics                      ");
         Statistics statistics = new Statistics(config);
-        System.out.println("\r - Preparing benchmark: creating statistics\t\t[DONE]");
+        System.out.println("\r - Preparing benchmark: creating statistics\t\t\t\t[DONE]");
         
         // Provider
         System.out.print("\r - Preparing benchmark: creating work provider                      ");
@@ -134,7 +136,10 @@ public class Main {
         System.out.println("\r - Preparing benchmark: purge database and re-initialize\t[DONE]");
         
         // Some logging
-        System.out.println("\r - Preparing benchmark: Done                                              ");
+        System.out.println("\r - Preparing benchmark: Done");
+        
+        // Some logging
+        System.out.println(" - Executing configuration: " + config.getName());
         
         // Start workers
         statistics.start();
@@ -143,7 +148,7 @@ public class Main {
         }
         
         // Some logging
-        System.out.println(" - Number of workers launched: " + config.getNumThreads());
+        System.out.println("   - Number of workers launched: " + config.getNumThreads());
         
         // Files to write to
         BufferedWriter writer = new BufferedWriter(new FileWriter(new File(config.getName() + "-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")) + ".csv")));
@@ -158,7 +163,7 @@ public class Main {
                 writer.flush();
                 
                 // Print progress
-                System.out.print("\r - Progress: " + (double)((int)(((double)(System.currentTimeMillis() - statistics.getStartTime())/(double)config.getMaxTime()) * 1000d))/10d + " %");
+                System.out.print("\r   - Progress: " + (double)((int)(((double)(System.currentTimeMillis() - statistics.getStartTime())/(double)config.getMaxTime()) * 1000d))/10d + " %");
             }
             
             // Reporting DB storage size
@@ -169,7 +174,7 @@ public class Main {
             
             // End of experiment
             if (System.currentTimeMillis() - statistics.getStartTime() >= config.getMaxTime()) {
-            	System.out.println("\r - Progress: 100 % ");
+            	System.out.println("\r   - Progress: 100 % ");
                 break;
             }
             
@@ -191,6 +196,9 @@ public class Main {
         if (config.isReportDBSpace()) {
         	dbWriter.close();
         }
+        
+        // Close client
+        ClientManager.shutdown();
         
         // Some logging
         System.out.println(" - Done");
