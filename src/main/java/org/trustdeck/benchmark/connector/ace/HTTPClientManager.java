@@ -24,7 +24,7 @@ import jakarta.ws.rs.client.ClientBuilder;
  * 
  * @author Armin Müller
  */
-public class ClientManager {
+public class HTTPClientManager {
     
 	/** The web client object needed to create requests. */
     private static volatile Client client;
@@ -32,7 +32,7 @@ public class ClientManager {
     /**
      *  Private constructor prevents instantiation.
      */
-    private ClientManager() {}
+    private HTTPClientManager() {}
 
     /**
      * Retrieve or create the client object.
@@ -43,7 +43,7 @@ public class ClientManager {
         // Double-checked-locking improves performance since thread 
     	// safety is only needed when creating the client for the first time.
     	if (client == null) {
-            synchronized (ClientManager.class) {
+            synchronized (HTTPClientManager.class) {
                 if (client == null) {
                     client = ClientBuilder.newClient();
                 }

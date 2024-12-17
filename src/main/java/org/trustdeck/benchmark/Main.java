@@ -32,7 +32,7 @@ import java.util.Map;
 import org.trustdeck.benchmark.connector.ConnectorException;
 import org.trustdeck.benchmark.connector.ConnectorFactory;
 import org.trustdeck.benchmark.connector.ace.ACEConnectorFactory;
-import org.trustdeck.benchmark.connector.ace.ClientManager;
+import org.trustdeck.benchmark.connector.ace.HTTPClientManager;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -197,7 +197,7 @@ public class Main {
         }
         
         // Close client
-        ClientManager.shutdown();
+        HTTPClientManager.shutdown();
         
         // Some logging
         System.out.println(" - Done");

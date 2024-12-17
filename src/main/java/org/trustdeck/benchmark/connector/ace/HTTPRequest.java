@@ -121,7 +121,7 @@ public class HTTPRequest {
      * @param parameters
      */
     public HTTPRequest(URI server, String path, HTTPRequestType requestType, String authToken, String body, HTTPMediaType bodyMediaType, Map<String, String> parameters) {
-        this.client = ClientManager.getClient();
+        this.client = HTTPClientManager.getClient();
         this.server = server;
         this.path = path;
         this.requestType = requestType;
